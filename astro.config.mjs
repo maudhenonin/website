@@ -2,11 +2,12 @@
 import { defineConfig } from "astro/config";
 import { storyblok } from "@storyblok/astro";
 import { loadEnv } from "vite";
-import netlify from "@astrojs/netlify";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 import StoryblokClient from "storyblok-js-client";
 import devtoolsJson from "vite-plugin-devtools-json";
+
+import vercel from "@astrojs/vercel";
 
 // const rootDir = new URL(".", import.meta.url).pathname;
 // const modulePath = resolve(rootDir, "src", "generated", "sriHashes.mjs");
@@ -37,7 +38,7 @@ storyblokStories.data.stories.map((story) => {
 // https://astro.build/config
 export default defineConfig({
   output: env.STORYBLOK_IS_PREVIEW === "yes" ? "server" : "static",
-  adapter: netlify(),
+
   integrations: [
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
@@ -72,8 +73,12 @@ export default defineConfig({
       filter: (page) => !filteredUrls.includes(page),
     }),
   ],
+
   site: siteurl,
+
   vite: {
     plugins: [devtoolsJson(), tailwindcss()],
   },
+
+  adapter: vercel()
 });
