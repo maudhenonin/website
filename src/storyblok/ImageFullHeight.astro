@@ -1,17 +1,17 @@
 ---
-import NetlifyImage from './utils/NetlifyImage.astro'
-
+import { Image } from 'astro:assets'
 const { blok } = Astro.props
 ---
 
 {
-  blok?.image?.filename && (
-    <section class="container">
-      <NetlifyImage
+  blok.image?.filename && (
+    <section class="container flex justify-center">
+      <Image
         src={blok.image.filename}
         alt={blok.image.alt}
         class="rounded-[var(--radius-box)] h-full w-auto"
-        loading={blok.image.loading === 'eager' ? 'eager' : 'lazy'}
+        priority={blok.image.loading === 'eager' ? true : false}
+        inferSize
       />
     </section>
   )

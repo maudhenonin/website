@@ -1,6 +1,6 @@
 ---
 import { storyblokEditable } from '@storyblok/astro'
-import NetlifyImage from './utils/NetlifyImage.astro'
+import { Image } from 'astro:assets'
 import RichText from './utils/RichText.astro'
 const { blok } = Astro.props
 ---
@@ -11,12 +11,15 @@ const { blok } = Astro.props
       {
         blok.gallery?.map((img) => (
           <li class="drag-gallery__item">
-            <NetlifyImage
-              src={img.filename}
-              alt={img.alt}
-              class="rounded-[var(--radius-box)]"
-              loading={img.loading === 'eager' ? 'eager' : 'lazy'}
-            />
+            {img.filename && (
+              <Image
+                src={img.filename}
+                alt={img.alt}
+                class="rounded-[var(--radius-box)]"
+                priority={img.loading === 'eager' ? true : false}
+                inferSize
+              />
+            )}
           </li>
         ))
       }

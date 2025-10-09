@@ -1,6 +1,6 @@
 ---
 import InlineSvg from '../utils/InlineSvg.astro'
-import NetlifyImage from '../utils/NetlifyImage.astro'
+import { Image } from 'astro:assets'
 import SWAGscore from './SWAGscore.astro'
 const { logo, name, slogan, menu } = Astro.props
 ---
@@ -14,12 +14,7 @@ const { logo, name, slogan, menu } = Astro.props
     }
     {
       logo?.filename && !logo.filename.endsWith('.svg') && (
-        <NetlifyImage
-          src={logo.filename}
-          alt={logo.alt}
-          innerclass="rounded-[var(--radius-box)] h-auto max-h-32 w-32"
-          skip="true"
-        />
+        <Image src={logo.filename} alt={logo.alt} class="rounded-[var(--radius-box)] h-auto max-h-32 w-32" inferSize />
       )
     }
     <p>

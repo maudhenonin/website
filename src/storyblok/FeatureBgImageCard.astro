@@ -1,19 +1,24 @@
 ---
 import { storyblokEditable } from '@storyblok/astro'
 import RichText from './utils/RichText.astro'
-import NetlifyImage from './utils/NetlifyImage.astro'
-
+import { Image } from 'astro:assets'
 const { blok } = Astro.props
 ---
 
 <section class="container" {...storyblokEditable(blok)} data-aos="fade-up">
   <div class="min-h-[35vh] md:min-h-[75vh] bg-center bg-cover bg-no-repeat relative bg-wrapper grid">
-    <NetlifyImage
-      src={blok.image?.filename}
-      alt={blok.image?.alt}
-      loading={blok.image?.loading === 'eager' ? 'eager' : 'lazy'}
-      class="rounded-[var(--radius-box)]"
-    />
+    {
+      blok.image?.filename && (
+        <Image
+          src={blok.image?.filename}
+          alt={blok.image?.alt}
+          priority={blok.image?.loading === 'eager' ? true : false}
+          class="rounded-[var(--radius-box)]"
+          inferSize
+        />
+      )
+    }
+
     {
       blok.content && (
         <div class="absolute bottom-0 start-0 end-0 max-w-xs md:max-w-sm text-center mx-auto p-6 md:start-auto md:text-start md:mx-0">

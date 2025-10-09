@@ -2,7 +2,8 @@
 import { storyblokEditable } from '@storyblok/astro'
 import RichText from './utils/RichText.astro'
 import InlineSvg from './utils/InlineSvg.astro'
-import NetlifyImage from './utils/NetlifyImage.astro'
+import { Image } from 'astro:assets'
+
 const { blok } = Astro.props
 
 blok.logos?.map((item) => (item.isSvg = item.filename.endsWith('.svg')))
@@ -18,7 +19,9 @@ blok.logos?.map((item) => (item.isSvg = item.filename.endsWith('.svg')))
       blok.logos?.map((logo) => (
         <li class="py-3 lg:py-5 w-16 h-auto md:w-20 lg:w-24 mx-auto sm:mx-0 text-base-content/50 flex justify-center">
           {logo.isSvg && <InlineSvg src={logo.filename} />}
-          {!logo.isSvg && <NetlifyImage src={logo.filename} alt={logo.alt} class="rounded-[var(--radius-box)]" />}
+          {!logo.isSvg && logo.filename && (
+            <Image src={logo.filename} alt={logo.alt} class="rounded-[var(--radius-box)]" inferSize />
+          )}
         </li>
       ))
     }

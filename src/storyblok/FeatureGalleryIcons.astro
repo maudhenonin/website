@@ -1,6 +1,6 @@
 ---
 import { storyblokEditable } from '@storyblok/astro'
-import NetlifyImage from './utils/NetlifyImage.astro'
+import { Image } from 'astro:assets'
 import InlineSvg from './utils/InlineSvg.astro'
 import Heading from './utils/Heading.astro'
 import RichText from './utils/RichText.astro'
@@ -33,8 +33,8 @@ blok.icons?.map((icon) => {
           data-aos="fade-down"
           data-aos-duration={500 + idx * 250}>
           {icon?.image && icon.image?.isSvg && <InlineSvg src={icon.image.filename} />}
-          {icon?.image && !icon.image.isSvg && (
-            <NetlifyImage src={icon.image.filename} alt={icon.image.alt} class="w-12 rounded-[var(--radius-box)]" />
+          {icon?.image && !icon.image.isSvg && icon.image?.filename && (
+            <Image src={icon.image.filename} alt={icon.image.alt} class="w-12 rounded-[var(--radius-box)]" inferSize />
           )}
           <div class="mt-2 sm:mt-6">
             <Heading classlist="sm:text-lg font-semibold" tag={icon.tag} content={icon.title} />
@@ -47,12 +47,15 @@ blok.icons?.map((icon) => {
     {
       blok.images?.map((image, idx) => (
         <div class="w-full h-32" data-aos="fade-up" data-aos-duration={500 + idx * 300}>
-          <NetlifyImage
-            src={image.filename}
-            alt={image.alt}
-            class="size-full object-cover object-center rounded-[var(--radius-box)]"
-            loading={image.loading === 'eager' ? 'eager' : 'lazy'}
-          />
+          {image?.filename && (
+            <Image
+              src={image.filename}
+              alt={image.alt}
+              class="size-full object-cover object-center rounded-[var(--radius-box)]"
+              priority={image.loading === 'eager' ? true : false}
+              inferSize
+            />
+          )}
         </div>
       ))
     }

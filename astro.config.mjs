@@ -6,7 +6,6 @@ import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 import StoryblokClient from "storyblok-js-client";
 import devtoolsJson from "vite-plugin-devtools-json";
-
 import vercel from "@astrojs/vercel";
 
 // const rootDir = new URL(".", import.meta.url).pathname;
@@ -80,5 +79,20 @@ export default defineConfig({
     plugins: [devtoolsJson(), tailwindcss()],
   },
 
-  adapter: vercel()
+  image: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "a.storyblok.com",
+        pathname: `/f/${env.STORYBLOK_SPACEID}/**`,
+      },
+    ],
+  },
+
+  adapter: vercel({
+    imageService: true,
+    imagesConfig: {
+      sizes: [300, 720, 1080, 1560, 1920, 2560],
+    },
+  }),
 });

@@ -13,6 +13,7 @@ export async function getStaticPaths() {
 }
 
 const params = Astro.params
+console.log(params)
 let props = isPreview() ? parseUrl(params?.slug) : Astro.props
 const { slug, language, langSwitch } = props
 const storyblokApi = useStoryblokApi()

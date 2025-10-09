@@ -1,6 +1,6 @@
 ---
 import { storyblokEditable } from '@storyblok/astro'
-import NetlifyImage from './utils/NetlifyImage.astro'
+import { Image } from 'astro:assets'
 import RichText from './utils/RichText.astro'
 
 const { blok } = Astro.props
@@ -23,12 +23,15 @@ let foregroundColor = blok.foregroundColorInvert ? 'text-base-100' : 'text-base-
   {
     blok.layout === 'center' && blok.image && (
       <div id="hero-bg" class="hero min-h-screen grid">
-        <NetlifyImage
-          src={blok.image.filename}
-          alt={blok.image.alt}
-          class="max-h-screen object-cover h-full"
-          loading={blok.image.loading === 'eager' ? 'eager' : 'lazy'}
-        />
+        {blok.image?.filename && (
+          <Image
+            src={blok.image.filename}
+            alt={blok.image.alt}
+            class="max-h-screen object-cover h-full"
+            priority={blok.image.loading === 'eager' ? true : false}
+            inferSize
+          />
+        )}
         <div class="hero-overlay" />
         <div class="hero-content container text-center">
           <div class={'rich-text ' + foregroundColor} data-aos="zoom-in">
@@ -43,13 +46,14 @@ let foregroundColor = blok.foregroundColorInvert ? 'text-base-100' : 'text-base-
       <div class="hero min-h-screen">
         <div
           class={`hero-content container flex-col ${blok.reversed ? 'lg:flex-row-reverse' : 'lg:flex-row'} justify-center items-center`}>
-          {blok.image && (
+          {blok.image?.filename && (
             <div data-aos={blok.reversed ? 'fade-left' : 'fade-right'} data-aos-delay="300">
-              <NetlifyImage
+              <Image
                 src={blok.image.filename}
                 alt={blok.image.alt}
                 class="max-w-full sm:max-w-sm md:max-w-md rounded-[var(--radius-box)] shadow-2xl"
-                loading={blok.image.loading === 'eager' ? 'eager' : 'lazy'}
+                priority={blok.image.loading === 'eager' ? true : false}
+                inferSize
               />
             </div>
           )}

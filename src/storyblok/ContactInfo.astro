@@ -2,7 +2,7 @@
 import { storyblokEditable } from '@storyblok/astro'
 import RichText from './utils/RichText.astro'
 import Heading from './utils/Heading.astro'
-import NetlifyImage from './utils/NetlifyImage.astro'
+import { Image } from 'astro:assets'
 import InlineSvg from './utils/InlineSvg.astro'
 const { blok } = Astro.props
 ---
@@ -22,11 +22,12 @@ const { blok } = Astro.props
     {
       blok.image?.filename && (
         <div class="overflow-hidden rounded-[var(--radius-box)]">
-          <NetlifyImage
+          <Image
             class="object-cover max-h-[500px]"
             src={blok.image.filename}
             alt={blok.image.alt}
-            loading={blok.image.loading === 'eager' ? 'eager' : 'lazy'}
+            priority={blok.image.loading === 'eager' ? true : false}
+            inferSize
           />
         </div>
       )

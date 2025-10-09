@@ -3,7 +3,7 @@ import { storyblokEditable } from '@storyblok/astro'
 import RichText from './utils/RichText.astro'
 import { useStoryblokApi } from '@storyblok/astro'
 import isPreview from '../utils/isPreview'
-import NetlifyImage from './utils/NetlifyImage.astro'
+import { Image } from 'astro:assets';
 
 const { blok } = Astro.props
 
@@ -13,25 +13,26 @@ const { data } = await storyblokApi.get('cdn/stories/', {
   starts_with: 'blog/',
   is_startpage: false
 })
-
 ---
 
 <section class="relative z-[1] container" {...storyblokEditable(blok)} data-aos="fade-up">
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
     <div class="max-w-xl lg:text-balance">
-      <RichText content={blok.title} />
+      {blok.title && <RichText content={blok.title} />}
+      
     </div>
     <div class="relative flex flex-col gap-12 lg:col-span-2">
       {
         data.stories?.map((article, index) => (
           <article class="relative flex flex-col isolate gap-8 lg:flex-row group">
             <div class="relative aspect-[16/9] sm:aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
-              {article.content.image && (
-                <NetlifyImage
+              {article.content?.image && article.content?.image.filename && (
+                <Image
                   src={article.content.image.filename}
                   alt={article.content.image.alt}
                   class="absolute inset-0 object-cover size-full rounded-[var(--radius-box)]"
-                  loading={index === 0 ? 'eager' : 'lazy'}
+                  priority={index === 0 ? true : false}
+                  inferSize
                 />
               )}
             </div>
@@ -44,12 +45,12 @@ const { data } = await storyblokApi.get('cdn/stories/', {
                   </div>
                 </a>
                 <div class="mt-4 text-base font-light line-clamp-3">
-                  <RichText content={article.content.abstract} />
+                  {article.content?.abstract && <RichText content={article.content.abstract} />}
                 </div>
               </div>
               <div class="relative flex items-center mt-4 gap-x-4">
                 <div>
-                  <h3 class="text-base font-medium text-base-900">{article.content.author}</h3>
+                  {article.content?.author && <h3 class="text-base font-medium text-base-900">{article.content.author}</h3>}
                   <div>
                     {article.content.creationDate && (
                       <span class="sr-only">{new Date(article.content.creationDate).toLocaleDateString()}</span>

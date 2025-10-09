@@ -1,7 +1,7 @@
 ---
 import { storyblokEditable } from '@storyblok/astro'
 import RichText from './utils/RichText.astro'
-import NetlifyImage from './utils/NetlifyImage.astro'
+import { Image } from 'astro:assets'
 import InlineSvg from './utils/InlineSvg.astro'
 const { blok } = Astro.props
 ---
@@ -21,11 +21,12 @@ const { blok } = Astro.props
               </div>
             )}
             {testimonial.image?.filename && !testimonial.image?.filename.endsWith('.svg') && (
-              <NetlifyImage
+              <Image
                 src={testimonial.image.filename}
                 alt={testimonial.image.filename}
-                loading={testimonial.image.loading === 'eager' ? 'eager' : 'lazy'}
+                priority={testimonial.image.loading === 'eager' ? true : false}
                 class="mx-auto w-20 h-auto sm:w-28 rounded-[var(--radius-box)]"
+                inferSize
               />
             )}
 

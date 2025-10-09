@@ -1,6 +1,6 @@
 ---
 import { storyblokEditable } from '@storyblok/astro'
-import NetlifyImage from './utils/NetlifyImage.astro'
+import { Image } from 'astro:assets'
 import RichText from './utils/RichText.astro'
 const { blok } = Astro.props
 ---
@@ -10,11 +10,12 @@ const { blok } = Astro.props
     {
       blok.image?.filename && (
         <figure>
-          <NetlifyImage
+          <Image
             src={blok.image.filename}
             alt={blok.image.alt}
             class="rounded-[var(--radius-box)]"
-            loading={blok.image.loading === 'eager' ? 'eager' : 'lazy'}
+            priority={blok.image.loading === 'eager' ? true : false}
+            inferSize
           />
         </figure>
       )
