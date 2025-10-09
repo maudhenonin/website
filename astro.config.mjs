@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, passthroughImageService } from "astro/config";
 import { storyblok } from "@storyblok/astro";
 import { loadEnv } from "vite";
 import tailwindcss from "@tailwindcss/vite";
@@ -80,6 +80,7 @@ export default defineConfig({
   },
 
   image: {
+    service: passthroughImageService(),
     remotePatterns: [
       {
         protocol: "https",
@@ -93,6 +94,13 @@ export default defineConfig({
     imageService: true,
     imagesConfig: {
       sizes: [300, 720, 1080, 1560, 1920, 2560],
+      remotePatterns: [
+        {
+          protocol: "https",
+          hostname: "a.storyblok.com",
+          pathname: `/f/${env.STORYBLOK_SPACEID}/**`,
+        },
+      ],
     },
   }),
 });
