@@ -3,6 +3,8 @@ import { storyblokEditable } from '@storyblok/astro'
 import RichText from './utils/RichText.astro'
 import Heading from './utils/Heading.astro'
 const { blok } = Astro.props
+
+console.log(blok)
 ---
 
 <section class="container" {...storyblokEditable(blok)} data-aos="fade-up">
@@ -20,7 +22,10 @@ const { blok } = Astro.props
     <div class="flex flex-col card card-border rounded-[var(--radius-box)] p-4 sm:p-6 lg:p-8">
       <Heading tag={blok.formTag} classlist="mb-8 text-xl font-semibold" content={blok.formTitle} />
 
-      <form netlify name={Astro.url.pathname} method="POST" data-success={blok.success}>
+      <form id="contact-form" name={Astro.url.pathname} method="POST" data-success={blok.success}>
+        <input type="hidden" value=`${import.meta.env.WEB3FORMS_ACCESS_KEY}` name="access_key" />
+        <input type="hidden" name="subject" value="Vous avez un nouveau contact !" />
+
         <div class="grid gap-4 lg:gap-6">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
             <div>
@@ -67,6 +72,7 @@ const { blok } = Astro.props
                 type="text"
                 name="telephone"
                 id="telephone"
+                required
                 class="text-base-content py-2.5 sm:py-3 px-4 block w-full card card-border rounded-[var(--radius-field)] sm:text-sm focus:border-accent focus:ring-accent disabled:opacity-50 disabled:pointer-events-none"
               />
             </div>
@@ -79,8 +85,8 @@ const { blok } = Astro.props
               id="message"
               name="message"
               rows="4"
-              class="text-base-content py-2.5 sm:py-3 px-4 block w-full card card-border rounded-[var(--radius-field)] sm:text-sm focus:border-accent focus:ring-accent disabled:opacity-50 disabled:pointer-events-none">
-            </textarea>
+              class="text-base-content py-2.5 sm:py-3 px-4 block w-full card card-border rounded-[var(--radius-field)] sm:text-sm focus:border-accent focus:ring-accent disabled:opacity-50 disabled:pointer-events-none"
+            ></textarea>
 
             <fieldset class="fieldset rounded-box">
               <label class="fieldset-label">
@@ -93,6 +99,8 @@ const { blok } = Astro.props
           </div>
         </div>
 
+        <input type="checkbox" name="botcheck" class="hidden" style="display: none;" />
+
         <div class="mt-6 grid">
           <button type="submit" class="btn btn-accent">Envoyer</button>
         </div>
@@ -100,6 +108,8 @@ const { blok } = Astro.props
         <div class="mt-3 text-center text-xs text-base-content/50">
           <RichText content={blok.info} />
         </div>
+
+        <div id="result" class="mt-3 text-center text-xs text-base-content/50"></div>
       </form>
     </div>
   </div>
@@ -107,49 +117,45 @@ const { blok } = Astro.props
 <!-- End Contact Us -->
 
 <script>
-  //FORM
-  const submitBtn = document.querySelector('form button[type="submit"]')
-  const formName = document.querySelector('form')
+  const form = document.getElementById('contact-form')
+  const result = document.getElementById('result')
+  const success = form?.dataset.success
 
-  if (submitBtn) {
-    submitBtn.addEventListener('click', (event) => {
-      event.preventDefault()
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault()
+      const formData = new FormData(form)
+      const object = Object.fromEntries(formData)
+      const json = JSON.stringify(object)
+      result.innerHTML = "En cours d'envoi..."
 
-      //Check validity of the current slide
-      const inputs = formName.querySelectorAll('input')
-      let valid = true
-      inputs.forEach((input) => {
-        if (!input.checkValidity() && valid) {
-          input.reportValidity()
-          valid = false
-          return
-        }
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: json
       })
-
-      if (valid) {
-        const message = document.querySelector('textarea')
-        if (!message.checkValidity()) {
-          message.reportValidity()
-          valid = false
-          return
-        }
-      }
-
-      if (valid) {
-        const success = formName.dataset.success
-        let formData = new FormData(formName)
-
-        fetch('/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams(formData).toString()
+        .then(async (response) => {
+          let json = await response.json()
+          if (response.status == 200) {
+            result.innerHTML = success
+          } else {
+            console.log(response)
+            result.innerHTML = json.message
+          }
         })
-          .then(() => {
-            alert(success)
-            formName.reset()
-          })
-          .catch((error) => alert(error))
-      }
+        .catch((error) => {
+          console.log(error)
+          result.innerHTML = 'Une erreur est survenue.'
+        })
+        .then(function () {
+          form.reset()
+          setTimeout(() => {
+            result.style.display = 'Aucune réponse.'
+          }, 3000)
+        })
     })
   }
 </script>
