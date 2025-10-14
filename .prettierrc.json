@@ -1,5 +1,7 @@
 {
-  "plugins": ["prettier-plugin-astro"],
+  "plugins": [
+    "prettier-plugin-astro"
+  ],
   "overrides": [
     {
       "files": "*.astro",
@@ -12,7 +14,7 @@
         "useTabs": false,
         "tabWidth": 2,
         "bracketSameLine": true,
-        "htmlWhitespaceSensitivity": "ignore"
+        "htmlWhitespaceSensitivity": "strict"
       }
     }
   ]
