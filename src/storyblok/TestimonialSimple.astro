@@ -4,19 +4,21 @@ import RichText from './utils/RichText.astro'
 import { Image } from 'astro:assets'
 import InlineSvg from './utils/InlineSvg.astro'
 const { blok } = Astro.props
+
+console.log(blok)
 ---
 
 <section class="container relative" {...storyblokEditable(blok)} data-aos="fade-up">
   <blockquote class="text-center lg:mx-auto lg:w-3/5">
     {
-      blok.image && blok.image?.filename.endsWith('.svg') && (
+      blok.image && blok.image?.filename?.endsWith('.svg') && (
         <div class="mx-auto w-20 h-auto sm:w-28">
           <InlineSvg src={blok.image.filename} />
         </div>
       )
     }
     {
-      blok.image && !blok.image?.filename.endsWith('.svg') && blok.image?.filename && (
+      blok.image && !blok.image?.filename?.endsWith('.svg') && blok.image?.filename && (
         <Image
           src={blok.image.filename}
           alt={blok.image.filename}
